@@ -1,0 +1,194 @@
+{% extends 'homeUser.html' %}
+{% load static %}
+
+{% block content %}
+
+<style>
+  .box-element.product {
+      background-color: #f9f9f9;
+      padding: 15px;
+      border: 1px solid #ddd;
+      border-radius: 5px;
+      text-align: center;
+      box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2);
+  }
+
+  .box-element.product h6 {
+      color: #333;
+      font-size: 18px;
+  }
+
+  .btn-details {
+      background-color: #007bff;
+      color: #fff;
+      text-transform: uppercase;
+  }
+
+  .btn-details:hover {
+      background-color: #0056b3;
+  }
+
+  .thumbnail {
+      width: 100%;
+      border-top-left-radius: 5px;
+      border-top-right-radius: 5px;
+  }
+   /* Basic styles */
+.form-inline {
+  display: flex;
+  align-items: center;
+}
+
+input[type="text"] {
+  padding: 8px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  transition: background-color 0.3s, color 0.3s;
+}
+
+button[type="submit"] {
+  padding: 8px 15px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  background-color: #ffffff;
+  color: #000000;
+  transition: background-color 0.3s, color 0.3s;
+  margin-left: 10px; /* Add space between input and button */
+}
+
+/* Animation on hover */
+input[type="text"]:hover {
+  background-color: #1a1a1a; /* Light black on hover */
+  color: #ffffff; /* Text color on hover */
+}
+
+button[type="submit"]:hover {
+  background-color: #FFEB3B; /* Light yellow on hover */
+  color: #1a1a1a; /* Text color on hover */
+}
+
+button[type="submit"]:hover::after {
+  content: '🚀'; /* Add an emoji on button hover */
+  margin-left: 5px; /* Space between text and emoji */
+}
+
+
+#loginMessage {
+      display: none;
+      margin-top: 10px;
+      padding: 15px;
+      background-color: #ffcccc;
+      border: 2px solid #ff0000;
+      border-radius: 5px;
+      color: #ff0000;
+      font-weight: bold;
+      text-align: center;
+  }
+
+  #loginMessage a {
+      text-decoration: none;
+      color: #ff0000;
+      margin-left: 5px;
+  }
+
+  #loginMessage a:hover {
+      text-decoration: underline;
+  }
+</style>
+<form action="{% url 'store_search' %}" method="GET" class="form-inline">
+  <input type="text" name="q" placeholder="Search products by name...">
+  <button type="submit">Search</button>
+</form>
+<div id="loginMessage" style="display: none; margin-top: 10px; padding: 10px; background-color: #ffcccc; border: 1px solid #ff0000;">
+  <p style="color: #ff0000; font-weight: bold;">You must be logged in to add items to the cart. Please <a href="{% url 'login' %}">login</a> or <a href="{% url 'register' %}">register</a>.</p>
+</div>
+<div class="row" style="margin-top: 0px; background: linear-gradient(to bottom, #f0f0f0);">
+  
+    {% for product in products %}
+    <div class="col-lg-4">
+        <div class="box-element product">
+            <img class="thumbnail" src="{{ product.imageURL }}">
+            <hr>
+              <h6><strong>{{ product.name }}</strong></h6>
+            <hr>
+            <button data-product="{{ product.id }}" data-action="add" class="btn btn-outline-secondary add-btn update-cart">Add to Cart</button>
+            <a href="{% url 'product_detail' product.id %}" class="btn btn-info btn-details">Details</a>
+            <h4 style="display: inline-block;"><strong>${{ product.price }}</strong></h4>
+        </div>
+    </div>
+    {% endfor %}
+</div>
+
+
+
+<script>
+console.log('JavaScript code is executed.');
+// Function to add items to the cart
+function addToCart(productId) {
+  console.log('Adding to cart:', productId);
+  const data = {
+    productId: productId,
+    action: 'add',
+  };
+
+  // Send an AJAX POST request to the 'update_cart' view
+  fetch('/update_cart/', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify(data),
+  })
+    .then((response) => response.json())
+    .then((data) => {
+      console.log('Add to Cart Response:', data); // Debugging log
+
+      // Update the cart total badge
+      const cartTotalBadge = document.getElementById('cart-total-badge');
+      if (cartTotalBadge) {
+        cartTotalBadge.textContent = data.cartItems;
+      } else {
+        console.error('Cart Total Badge not found.');
+      }
+    })
+    .catch((error) => {
+      console.error('Add to Cart Error:', error);
+    });
+}
+
+
+
+
+
+// Additional code added:
+const addButtons = document.querySelectorAll('.add-btn');
+addButtons.forEach((button) => {
+  button.addEventListener('click', function () {
+    const productId = this.getAttribute('data-product');
+
+    // Check if the user is authenticated using Django template tags
+    const isAuthenticated = '{{ user.is_authenticated }}'; // Django template tag
+
+    if (isAuthenticated === 'True') {
+      addToCart(productId); // User is authenticated, add to cart
+    } else {
+      document.getElementById('loginMessage').style.display = 'block';
+
+    }
+  });
+});
+
+
+
+
+
+
+
+
+
+
+
+
+</script>
+
+{% endblock content %}

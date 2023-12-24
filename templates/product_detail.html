@@ -1,0 +1,59 @@
+{% extends 'homeUser.html' %}
+{% load static %}
+{% block content %}
+<style>
+    /* Add your CSS styles here */
+    .product-container {
+        max-width: 800px;
+        margin: 0 auto;
+        text-align: center;
+        padding: 20px;
+        background-color: #f9f9f9; /* Add a background color to the container */
+        border-radius: 10px;
+        box-shadow: 0 0 10px rgba(0, 0, 0, 0.2); /* Add a subtle box shadow */
+    }
+    .product-image {
+        max-width: 100%;
+        border: 2px solid #0074E4; /* Add a border to the image */
+        border-radius: 10px;
+    }
+    .product-description {
+        margin-top: 20px;
+        font-size: 16px;
+        background-color: #fff;
+        padding: 20px;
+        border-radius: 5px;
+        box-shadow: 0 0 5px rgba(0, 0, 0, 0.1);
+    }
+    .product-price {
+        font-size: 24px;
+        color: #0074E4; /* Style the price color */
+        font-weight: bold; /* Make the price text bold */
+    }
+    .back-button {
+        margin-top: 20px;
+        background-color: #0074E4;
+        color: white;
+        padding: 10px 20px;
+        text-decoration: none;
+        border: none;
+        border-radius: 5px;
+        cursor: pointer;
+    }
+</style>
+</head>
+<body>
+<div class="product-container">
+    <h1>{{ product.name }}</h1>
+    <img class="product-image" src="{{ product.imageURL }}" alt="Product Image">
+    <div class="product-price">
+        ${{ product.price }}
+    </div>
+    <div class="product-description">
+        <p>{{ product.description }}</p>
+    </div>
+    <div>
+        <a href="{% url 'store' %}" class="back-button">Back</a>
+    </div>
+</div>
+{% endblock content %}

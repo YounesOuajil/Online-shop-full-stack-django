@@ -1,0 +1,182 @@
+{% extends 'homeAdmin.html' %}
+{% load static %}
+{% block content %}
+    <style>
+           /* Styles for the order details */
+           .order-container {
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            padding: 20px;
+            margin-bottom: 20px;
+            background-color: #fff;
+        }
+        
+        .order-container p {
+            margin: 5px 0;
+            font-size: 16px;
+            color: #333;
+        }
+
+        /* Shipping Address Details */
+        .shipping-info {
+            background-color: #f9f9f9;
+            padding: 10px;
+            border-radius: 5px;
+            margin-bottom: 15px;
+        }
+
+        .shipping-info p {
+            margin: 5px 0;
+            font-size: 14px;
+            color: #333;
+        }
+
+        /* Order Items */
+        .item-header {
+            font-size: 18px;
+            font-weight: bold;
+            margin-bottom: 15px;
+        }
+
+        .order-item {
+            border: 1px solid #eee;
+            border-radius: 5px;
+            padding: 15px;
+            margin-bottom: 15px;
+            background-color: #f5f5f5;
+        }
+
+        .product-info {
+            margin: 8px 0;
+            font-size: 14px;
+            color: #333;
+        }
+
+        /* Button group styles */
+        .button-group {
+            display: flex;
+            gap: 10px;
+            margin-top: 20px;
+        }
+
+        /* Button styles */
+        button {
+            padding: 12px 25px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+            color: #fff;
+            text-transform: uppercase;
+            font-weight: bold;
+        }
+
+        .highlight-button {
+            background-color: #4CAF50;
+        }
+
+        .clear-button {
+            background-color: #f44336;
+        }
+
+        .highlighted {
+            background-color: lightgreen;
+        }
+        .shipping-info p::before {
+            content: "\1F4E6"; /* 📦 - Package Emoji */
+            margin-right: 8px;
+        }
+
+        .shipping-info p:nth-of-type(2)::before {
+            content: "\1F3E0"; /* 🏠 - House Emoji */
+            margin-right: 8px;
+        }
+
+        .shipping-info p:nth-of-type(3)::before {
+            content: "\1F4DE"; /* 📞 - Telephone Receiver Emoji */
+            margin-right: 8px;
+        }
+
+        .shipping-info p:nth-of-type(4)::before {
+            content: "\1F4C5"; /* 📅 - Calendar Emoji */
+            margin-right: 8px;
+        }
+
+        .product-info:nth-of-type(2)::before {
+            content: "\1F4D3"; /* 📓 - Notebook Emoji */
+            margin-right: 8px;
+        }
+    </style>
+
+<div class="content">
+    <div class="header">
+        <div class="page-title">Orders</div>
+        <div class="user-profile">
+            
+                <img class="user-avatar" src="{%static 'img/ownerpic.png'%}">
+            
+            
+            <div class="user-name">Ouajil Younes</div>
+        </div>
+   
+    </div>
+
+        <h1>Order Details</h1>
+        {% for order in order_details %}
+        <div class="order-container" id="order-{{ order.order_id }}">
+                <p class="order-info">Order ID: {{ order.order_id }}</p>
+                
+                <!-- Shipping Address Details -->
+                <div class="shipping-info">
+                    <p>Shipping Address: {{ order.shipping_address.address }}</p>
+                    <p>City: {{ order.shipping_address.city }}</p>
+                    <p>Phone: {{ order.shipping_address.phone }}</p>
+                    <p>Date Added: {{ order.shipping_address.date_added }}</p>
+                </div>
+                
+                <!-- Order Items -->
+                <h3 class="item-header">Order Items:</h3>
+                {% for item in order.order_items %}
+                    <div class="order-item">
+                        <p class="product-info">Product: {{ item.product }}</p>
+                        <p class="product-info">Quantity: {{ item.quantity }}</p>
+                        <!-- Add more details as needed -->
+                    </div>
+                {% endfor %}
+                
+                
+                    <!-- Other details -->
+                    <button class="clear-button" onclick="clearOrderDetails('{{ order.order_id }}')">Clear Order</button>
+                
+            </div>
+        {% endfor %}
+    </div>
+    <script>
+       
+
+        function clearOrderDetails(button) {
+            var orderContainer = button.parentNode.parentNode;
+            orderContainer.classList.remove("highlighted");
+        }
+
+        
+        function clearOrderDetails(orderId) {
+    fetch(`/delete_order/${orderId}/`, {
+        method: 'DELETE',
+        headers: {
+            'Content-Type': 'application/json',
+        }
+    })
+    .then(response => {
+        if (response.ok) {
+            const orderElement = document.getElementById(`order-${orderId}`);
+            orderElement.remove(); // Remove the order element from the DOM
+        }
+    })
+    .catch(error => console.error('Error:', error));
+}
+
+
+
+    </script>
+{% endblock %}

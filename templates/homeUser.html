@@ -1,0 +1,199 @@
+{% load static %}
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Ecom</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css"
+          integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
+    <link rel="stylesheet" type="text/css" href="{% static 'css/main.css' %}">
+    <style>
+        /* Custom styles go here */
+        body {
+            background-color: #ffffff;
+            font-family: Arial, sans-serif;
+        }
+
+        .navbar {
+            background-color: #343a40;
+            position: fixed;
+            width: 100%;
+            top: 0;
+            z-index: 1;
+        }
+
+        .navbar-brand {
+            font-size: 24px;
+            color: #fff;
+        }
+
+        .navbar-toggler-icon {
+            background-color: #fff;
+        }
+
+        .nav-link {
+            color: #fff;
+        }
+
+        .nav-link:hover {
+            color: #ffc107;
+        }
+
+        .btn-logout {
+            background-color: #ffc107;
+            color: #343a40;
+        }
+
+        .btn-logout:hover {
+            background-color: #343a40;
+            color: #ffc107;
+        }
+
+        /* Cart badge styles */
+        #cart-badge-container {
+            position: relative;
+            display: inline-block;
+        }
+
+        #cart-icon {
+            width: 25px;
+        }
+
+        #cart-total-badge {
+            background-color: #ffc107;
+            color: #fff;
+            border-radius: 50%;
+            width: 20px;
+            height: 20px;
+            text-align: center;
+            font-size: 14px;
+            position: absolute;
+            top: -10px;
+            right: -10px;
+        }
+
+        /* Content container styles */
+        .container {
+            background-color: #fff;
+            padding: 20px;
+            border-radius: 5px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            margin-top: 75px;
+            /* Adjust the margin for content positioning */
+        }
+
+        /* Footer styles */
+        .footer {
+            background-color: #343a40;
+            color: #fff;
+            text-align: center;
+            padding: 10px;
+            position: relative;
+            width: 100%;
+            bottom: 0;
+            z-index: 1;
+        }
+    </style>
+    <style>
+  /* Your existing CSS styles */
+  /* ... */
+
+  /* Additional styles for the login message */
+  #loginMessage {
+    display: none;
+    margin-top: 10px;
+    padding: 15px;
+    background-color: #ffcccc;
+    border: 2px solid #ff0000;
+    border-radius: 5px;
+    color: #ff0000;
+    font-weight: bold;
+    text-align: center;
+  }
+
+  #loginMessage a {
+    text-decoration: none;
+    color: #ff0000;
+    margin-left: 5px;
+  }
+
+  #loginMessage a:hover {
+    text-decoration: underline;
+  }
+</style>
+</head>
+<body>
+
+<nav class="navbar navbar-expand-lg navbar-dark">
+  <img src="{% static 'img/pngegg.png' %}" alt="Your Logo" width="30" height="30">
+  <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent">
+    <span class="navbar-toggler-icon"></span>
+  </button>
+ 
+
+  <div class="collapse navbar-collapse" id="navbarSupportedContent">
+    <ul class="navbar-nav mr-auto">
+      <li class="nav-item active">
+        <a class="nav-link" href="{% url 'store' %}">Store <span class="sr-only">(current)</span></a>
+      </li>
+    </ul>
+    
+    
+    
+    
+    <div class="form-inline my-2 my-lg-0">
+        <a href="{% url 'logout' %}" class="btn btn-logout">Logout</a>
+
+        <div id="cart-badge-container">
+          <a href="{% url 'cart' %}" id="cart-link">
+              <img id="cart-icon" src="{% static 'img/cart.png' %}">
+              <div id="cart-total-badge" class="badge">{{ cartItemsPN|default:0 }}</div>
+          </a>
+      </div>
+    </div>
+    
+  </div>
+  
+</nav>
+
+<div class="container">
+    <div id="loginMessage">
+        You must be logged in to access the cart. Please <a href="{% url 'login' %}">login</a> or <a href="{% url 'register' %}">register</a>.
+      </div>
+      <br>
+    {% block content %}
+    {% endblock content %}
+</div>
+
+<script>
+    console.log('JavaScript code is executed.');
+    
+    // Function to add items to the cart remains unchanged
+    
+    // Handling click on the cart icon
+    document.getElementById('cart-link').addEventListener('click', function(event) {
+      // Prevent the default link behavior to handle the click event manually
+      event.preventDefault();
+    
+      // Check if the user is authenticated using Django template tags
+      const isAuthenticated = '{{ user.is_authenticated }}'; // Django template tag
+    
+      if (isAuthenticated !== 'True') {
+        // Display the login message
+        document.getElementById('loginMessage').style.display = 'block';
+      } else {
+        // User is authenticated, proceed to the cart page
+        window.location.href = this.href;
+      }
+    });
+    </script>
+
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js" integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo" crossorigin="anonymous"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js" integrity="sha384-wfSDF2E50Y2D1uUdj0O3uMBJnjuUD4Ih7YwaYd1iqfktj0Uod8GCExl3Og8ifwB6" crossorigin="anonymous"></script>
+
+</body>
+<footer class="footer">
+  &copy; 2023 Chop
+</footer>
+</html>

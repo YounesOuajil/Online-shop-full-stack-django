@@ -1,0 +1,234 @@
+<!-- 
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Signup Form</title>
+    {% load static %}
+    <link rel="stylesheet" href="{% static 'register.css' %}">
+</head>
+<body>
+    <div class="wrapper">
+        <div class="form-container">
+            <div class="form-inner">
+                <form action="{% url 'register' %}" method='post' class="signup">
+                    {% csrf_token %}
+                    <div class="title-text">
+                        <div class="title">Signup Form</div>
+                    </div>
+                    <div class="field">
+                        {{form.email}}
+                    </div>
+                    <div class="field">
+                        {{form.password1}}
+                    </div>
+                    <div class="field">
+                        {{form.password2}}
+                    </div>
+                     
+                    <div class="field btn">
+                        <div class="btn-layer"></div>
+                        <input type="submit" value="Signup">
+                    </div>
+                    <div class="signup-link">Already a member? <a href="{% url 'login' %}" class="switch-form">Login here</a></div>
+                </form>
+                
+
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const switchForm = document.querySelector(".switch-form");
+
+        switchForm.addEventListener('click', () => {
+            window.location.href = "{% url 'login' %}"; 
+        });
+    </script>
+</body>
+</html>
+-->
+<!DOCTYPE html>
+<html>
+    
+<head>
+	<title>Signup</title>
+	<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css" integrity="sha384-MCw98/SFnGE8fJT3GXwEOngsV7Zt27NXFoaoApmYm81iuXoPkFOJwJ8ERdknLPMO" crossorigin="anonymous">
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+	<link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.6.1/css/all.css" integrity="sha384-gfdkjb5BdAXd+lj+gudLWI+BXq4IuLW5IT+brZEZsLFm++aCMlF1V92rMkPaX4PP" crossorigin="anonymous">
+    {% load static %}
+    <link rel="stylesheet" href="{% static 'css/register.css' %}">
+   
+
+    <style>
+        body, html {
+            margin: 0;
+            padding: 0;
+            height: 100%;
+            background: #333;
+            transition: background-color 0.5s;
+        }
+        .user_card {
+            width: 350px;
+            margin: 0 auto;
+            background: #333;
+            color: #fff;
+            display: flex;
+            flex-direction: column;
+            padding: 15px;
+            box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2);
+            border-radius: 5px;
+            animation: fadeIn 1s;
+            transition: background-color 0.5s;
+        }
+        .form_container {
+            margin-top: 20px;
+        }
+        #form-title {
+            color: #007bff;
+            font-size: 24px;
+            text-align: center;
+            margin-bottom: 10px;
+        }
+        .login_btn {
+            width: 100%;
+            background: #007bff !important;
+            color: #fff !important;
+            border: 0 !important;
+            padding: 10px;
+            font-size: 18px;
+            cursor: pointer;
+        }
+        .login_btn:focus {
+            box-shadow: none !important;
+            outline: 0 !important;
+        }
+        .input-group-text {
+            background: #333 !important;
+            color: #fff !important;
+            border: 1px solid #444 !important;
+            border-radius: 5px;
+        }
+        .input_user, .input_pass {
+            box-shadow: none !important;
+            outline: 0 !important;
+        }
+        .login_container {
+            text-align: center;
+        }
+        .links {
+            text-align: center;
+            margin-top: 20px;
+        }
+        .links a {
+            color: #007bff;
+            text-decoration: none;
+            font-weight: bold;
+            transition: color 0.3s;
+        }
+        .alert {
+            background-color: #dc3545;
+            color: #fff;
+            padding: 10px;
+            border-radius: 5px;
+            margin-top: 10px;
+        }
+    
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(-20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+    
+        .light-blue-bg {
+            background: #7abecc !important;
+            color: #333 !important;
+        }
+    </style>
+</head> 
+<body>
+	<div class="container h-100">
+		<div class="d-flex justify-content-center h-100">
+			<div class="user_card">
+				<div class="d-flex justify-content-center">
+					<h3 id="form-title">REGISTER ACCOUNT</h3>
+				</div>
+				<div class="d-flex justify-content-center form_container">
+
+					<form method="POST" action="{% url 'register' %}">
+						{% csrf_token %}
+						<div class="input-group mb-2">
+                            <div class="input-group-append">
+                                <span class="input-group-text"><i class="fas fa-user"></i></span>
+                            </div>
+                            {{ form.username }}
+                        </div>
+                        <div class="input-group mb-2">
+                            <div class="input-group-append">
+                                <span class="input-group-text"><i class="fas fa-envelope-square"></i></span>
+                            </div>
+                            {{ form.email }}
+                        </div>
+                        <div class="input-group mb-2">
+                            <div class="input-group-append">
+                                <span class="input-group-text"><i class="fas fa-key"></i></span>
+                            </div>
+                            {{ form.password1 }}
+                        </div>
+                        <div class="input-group mb-2">
+                            <div class="input-group-append">
+                                <span class="input-group-text"><i class="fas fa-key"></i></span>
+                            </div>
+                            {{ form.password2 }}
+                        </div>
+                        
+
+				   		<div class="d-flex justify-content-center mt-3 login_container">
+				 			<input class="btn login_btn" type="submit" value="Register Account">
+				   		</div>
+
+                          
+					</form>
+				</div>
+                {% if form.errors %}
+                <div class="alert alert-danger">
+                    <ul>
+                        {% for field, errors in form.errors.items %}
+                            {% for error in errors %}
+                                <li>{{ error }}</li>
+                            {% endfor %}
+                        {% endfor %}
+                    </ul>
+                </div>
+                {% endif %}
+				<div class="mt-4">
+					<div class="d-flex justify-content-center links">
+						Already have an account? <a href="{% url 'login' %}" class="ml-2">Login</a>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+	<script>
+
+		var form_fields = document.getElementsByTagName('input')
+        form_fields[1].placeholder='Enter username...';
+		form_fields[2].placeholder='Email..';
+		form_fields[3].placeholder='Enter password...';
+		form_fields[4].placeholder='Re-enter Password...';
+
+
+		for (var field in form_fields){	
+			form_fields[field].className += ' form-control'
+		}
+	</script>
+</body>
+</html>
+

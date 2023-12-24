@@ -1,0 +1,107 @@
+{% extends 'homeUser.html' %}
+{% load static %}
+
+{% block content %}
+<div class="row" style="margin-top: 0px; background: linear-gradient(to bottom, #f0f0f0);">
+
+  {% if results %}
+
+      {% for product in results %}
+        <div class="col-lg-4">
+            <div class="box-element product">
+                <img class="thumbnail" src="{{ product.imageURL }}">
+                <hr>
+                <h6><strong>{{ product.name }}</strong></h6>
+                <hr>
+                <button data-product="{{ product.id }}" data-action="add" class="btn btn-outline-secondary add-btn update-cart">Add to Cart</button>
+                <a href="{% url 'product_detail' product.id %}" class="btn btn-info btn-details">Details</a>
+                <h4 style="display: inline-block;"><strong>${{ product.price }}</strong></h4>
+            </div>
+        </div>
+        {% endfor %}
+  {% else %} 
+  <br>
+   <h1> Sorry, the product doesn't exist or has expired. </h1>
+
+  {% endif %}
+
+
+</div>
+<style>
+    .box-element.product {
+        background-color: #f9f9f9;
+        padding: 15px;
+        border: 1px solid #ddd;
+        border-radius: 5px;
+        text-align: center;
+        box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2);
+    }
+
+    .box-element.product h6 {
+        color: #333;
+        font-size: 18px;
+    }
+
+    .btn-details {
+        background-color: #007bff;
+        color: #fff;
+        text-transform: uppercase;
+    }
+
+    .btn-details:hover {
+        background-color: #0056b3;
+    }
+
+    .thumbnail {
+        width: 100%;
+        border-top-left-radius: 5px;
+        border-top-right-radius: 5px;
+    }
+</style>
+<script>
+console.log('JavaScript code is executed.');
+// Function to add items to the cart
+function addToCart(productId) {
+  console.log('Adding to cart:', productId);
+  const data = {
+    productId: productId,
+    action: 'add',
+  };
+
+  // Send an AJAX POST request to the 'update_cart' view
+  fetch('/update_cart/', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify(data),
+  })
+    .then((response) => response.json())
+    .then((data) => {
+      console.log('Add to Cart Response:', data); // Debugging log
+
+      // Update the cart total badge
+      const cartTotalBadge = document.getElementById('cart-total-badge');
+      if (cartTotalBadge) {
+        cartTotalBadge.textContent = data.cartItems;
+      } else {
+        console.error('Cart Total Badge not found.');
+      }
+    })
+    .catch((error) => {
+      console.error('Add to Cart Error:', error);
+    });
+}
+
+// Attach click event listeners to the "Add to Cart" buttons
+const addButtons = document.querySelectorAll('.add-btn');
+addButtons.forEach((button) => {
+  button.addEventListener('click', function () {
+    const productId = this.getAttribute('data-product');
+    addToCart(productId);
+  });
+});
+
+</script>
+
+{% endblock content %}

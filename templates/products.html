@@ -1,0 +1,407 @@
+{% extends "homeAdmin.html" %}
+{% load static %}
+{% block content %}
+<div class="content">
+    <div class="header">
+        <div class="page-title">Products</div>
+        <div class="user-profile">
+            
+                <img class="user-avatar" src="{%static 'img/ownerpic.png'%}">
+            
+            
+            <div class="user-name">Ouajil Younes</div>
+        </div>
+   
+    </div>
+
+    <style>
+        
+
+        /* Buttons */
+        .btn {
+            background-color: #555;
+            color: #fff;
+            padding: 8px 16px;
+            border: none;
+            cursor: pointer;
+            margin-right: 10px;
+        }
+    
+        .btn:hover {
+            background-color: #333;
+        }
+    
+        /* Input and Textarea Fields */
+        .input-field,
+        .textarea-field {
+            width: 100%;
+            padding: 8px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            margin-top: 5px;
+            margin-bottom: 10px;
+        }
+    
+        /* Product Table */
+        .product-table {
+            background-color: #ffffff;
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+    
+        .product-table th, .product-table td {
+            border: 1px solid #ccc;
+            padding: 10px;
+            text-align: left;
+        }
+    
+        .product-table .product-image {
+            max-width: 100px;
+            max-height: 100px;
+        }
+    
+    
+        .form-group {
+            margin-bottom: 10px;
+        }
+    
+        /* Product Image Details */
+        .product-image-details {
+            text-align: center;
+        }
+    
+        #selected-product-image {
+            max-width: 200px;
+            max-height: 200px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            margin-top: 10px;
+        }
+        /* Input and Textarea Fields */
+        .input-field,
+.textarea-field {
+    width: 40%; /* Adjust the width as needed */
+    padding: 8px; /* Adjust the padding to control the size */
+    margin: 10px 0;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    font-size: 14px; /* Modify the font size for a more reasonable appearance */
+    font-family: 'Arial', sans-serif;
+}
+/* Buttons */
+.btn {
+    display: inline-block;
+    padding: 10px 20px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    text-align: center;
+    text-decoration: none;
+    background-color: #3c4246;
+    color: white;
+    font-size: 16px;
+    transition: background-color 0.3s;
+}
+
+.btn:hover {
+    background-color: #3c4246;
+}
+
+/* Form Group and Labels */
+.form-group {
+    margin-bottom: 15px;
+}
+
+.form-group label {
+    display: block;
+    font-weight: bold;
+    margin-bottom: 5px;
+}
+
+/* Adjusting the buttons for "Update" and "Add" */
+.btn-update,
+.btn-add {
+    display: inline-block;
+    padding: 10px 20px;
+    margin: 10px 0;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    text-align: center;
+    text-decoration: none;
+    background-color: #3c4246;
+    color: white;
+    font-size: 16px;
+    transition: background-color 0.3s;
+}
+
+.btn-update:hover,
+.btn-add:hover {
+    background-color: #3c4246;
+}
+    </style>
+
+<div class="main-content">
+    <div class="statistic">
+        <div class="statistic-item">
+            <div class="statistic-value">{{ product_total }}</div>
+            <div class="statistic-label">Products</div>
+        </div>
+        <div class="statistic-item">
+            <div class="statistic-value">{{ order_total }}</div>
+            <div class="statistic-label">Orders</div>
+        </div>
+        <div class="statistic-item">
+            <div class="statistic-value">{{ customer_total }}</div>
+            <div class="statistic-label">Customers</div>
+        </div>
+    </div>
+
+    <div class="product-container">
+        <div class="product-list">
+            <table class="product-table">
+                <thead>
+                    <tr>
+                        <th>Name</th>
+                        <th>Image</th>
+                        <th>Description</th>
+                        <th>Price</th>
+                        <th>Quantity</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for product in products %}
+                    <tr class="product-row" data-product-id="{{ product.id }}">
+                        <td>{{ product.name }}</td>
+                        <td><img src="{{ product.imageURL }}" alt="{{ product.name }}" class="product-image"></td>
+                        <td>{{ product.description }}</td>
+                        <td>{{ product.price|floatformat:2 }}</td>
+                        <td>
+                            <div>
+                                <button data-action="delete" class="btn btn-delete">Delete</button>
+                                 <br>
+                                <button data-action="edit" class="btn btn-edit">Edit</button>
+                            </div>
+                        </td>
+                            
+                            
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+        <div class="product-details">
+            <h2>Product Details</h2>
+            
+           
+            <form id="product-form"  method="post"  enctype="multipart/form-data">
+                {% csrf_token %}
+                <div class="form-group">
+                    <label for="product-image">Image:</label>
+                    <input type="file" id="product-image" name="product-image" class="input-field">
+                </div>
+                <input type="hidden" name="product-id" id="product-id">
+                <div class="form-group">
+                    <label for="product-name">Name:</label>
+                    <input type="text" id="product-name" name="product-name" class="input-field product-name-field">
+                </div>
+                <div class="form-group">
+                    <label for="product-price">Price:</label>
+                    <input type="text" id="product-price" name="product-price" class="input-field product-price-field">
+                </div>
+                <div class="form-group">
+                    <label for="product-description">Description:</label>
+                    <textarea id="product-description" name="product-description" class="textarea-field"></textarea>
+                </div>
+                <div class="form-group">
+                    <label for="product-quantity">Quantity:</label>
+                    <textarea id="product-quantity" name="product-quantity" class="textarea-field"></textarea>
+                </div>
+                     <div>
+                        <button data-action="update" class="btn btn-update">Update</button>
+                        <button data-action="add" class="btn btn-add">Add</button>
+
+                     </div>
+
+
+                
+            </form>
+            <br>
+        </div>
+    </div>
+    
+   
+    
+
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+    const selectedProductImage = document.getElementById('selected-product-image');
+    const productForm = document.getElementById('product-form');
+    const addButton = document.querySelector('.btn-add');
+    const updateButton = document.querySelector('.btn-update');
+
+    function handleEditAction(editButton) {
+        editButton.addEventListener('click', () => {
+            const row = editButton.closest('.product-row');
+            const productName = row.cells[0].innerHTML;
+            const productImageURL = row.cells[1].querySelector('img').src;
+            const productDescription = row.cells[2].innerHTML;
+            const productPrice = row.cells[3].innerHTML;
+            const productQuantity = row.cells[4].innerHTML;
+
+
+            document.getElementById('product-name').value = productName;
+            document.getElementById('product-price').value = productPrice;
+            document.getElementById('product-description').value = productDescription;
+            document.getElementById('product-quantity').value = productQuantity;
+
+
+            if (selectedProductImage) {
+                selectedProductImage.src = productImageURL;
+            }
+
+            const selectedProductIdField = document.getElementById('product-id');
+            selectedProductIdField.value = row.dataset.productId;
+
+            const productDetails = document.querySelector('.product-details');
+            productDetails.style.display = 'block';
+        });
+    }
+
+    function clearForm() {
+        document.getElementById('product-name').value = '';
+        document.getElementById('product-price').value = '';
+        document.getElementById('product-description').value = '';
+        document.getElementById('product-quantity').value = '';
+        const selectedProductImage = document.getElementById('selected-product-image');
+        if (selectedProductImage) {
+            selectedProductImage.src = '';
+        }
+        const productDetails = document.querySelector('.product-details');
+        if (productDetails) {
+            productDetails.style.display = 'none';
+        }
+        const selectedProductIdField = document.getElementById('product-id');
+        if (selectedProductIdField) {
+            selectedProductIdField.value = '';
+        }
+    }
+
+    function updateProductList() {
+        fetch('/up_products/')
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error('Network response was not OK');
+                }
+                return response.json();
+            })
+            .then(data => {
+                const productContainer = document.querySelector('.product-list tbody');
+                productContainer.innerHTML = '';
+
+                if (data && data.length > 0) {
+                    data.forEach(product => {
+                        const newRow = document.createElement('tr');
+                        newRow.classList.add('product-row');
+                        newRow.setAttribute('data-product-id', product.id);
+
+                        newRow.innerHTML = `
+                            <td>${product.name}</td>
+                            <td><img src="${product.imageURL}" alt="${product.name}" class="product-image"></td>
+                            <td>${product.description}</td>
+                            <td>${product.price}</td>
+                            <td>${product.quantity}</td>
+                            <td>
+                                <button data-action="delete" class="btn btn-delete">Delete</button>
+                                <button data-action="edit" class="btn btn-edit">Edit</button>
+                            </td>
+                        `;
+
+                        const editButtons = newRow.querySelectorAll('.btn-edit');
+                        editButtons.forEach(editButton => {
+                            handleEditAction(editButton);
+                        });
+
+                        productContainer.appendChild(newRow);
+                    });
+                } else {
+                    console.log('No data received from the server.');
+                }
+
+                const productDetails = document.querySelector('.product-details');
+                productDetails.classList.add('visible');
+            })
+            .catch(error => {
+                console.error('Error updating product list:', error);
+                console.log('Received content:', error.message);
+            });
+    }
+
+    addButton.addEventListener('click', function () {
+        const formData = new FormData(productForm);
+
+        fetch('/products/add/', {
+            method: 'POST',
+            body: formData
+        })
+        .then(response => response.json())
+        .then(data => {
+            clearForm();
+            updateProductList();
+            const productDetails = document.querySelector('.product-details');
+            productDetails.style.display = 'block';
+        })
+        .catch(error => {
+            console.error('Error:', error);
+        });
+    });
+
+    updateButton.addEventListener('click', function () {
+        const productId = document.getElementById('product-id').value;
+        const formData = new FormData(productForm);
+
+        fetch(`/products/${productId}/update/`, {
+            method: 'POST',
+            body: formData
+        })
+        .then(response => response.json())
+        .then(data => {
+            clearForm();
+            updateProductList();
+            const productDetails = document.querySelector('.product-details');
+            productDetails.style.display = 'block';
+        })
+        .catch(error => {
+            console.error('Error:', error);
+        });
+    });
+
+    document.querySelector('.product-list').addEventListener('click', function (event) {
+        if (event.target.classList.contains('btn-delete')) {
+            const productId = event.target.closest('.product-row').dataset.productId;
+            const csrftoken = document.querySelector('input[name="csrfmiddlewaretoken"]').value;
+            fetch(`/products/${productId}/delete/`, {
+                method: 'DELETE',
+                headers: {
+                    'X-CSRFToken': csrftoken
+                }
+            })
+            .then(response => {
+                clearForm();
+                updateProductList();
+                const productDetails = document.querySelector('.product-details');
+                productDetails.style.display = 'block';
+            })
+            .catch(error => {
+                console.error('Error:', error);
+            });
+        }
+    });
+
+    updateProductList();
+});
+
+</script>
+{% endblock content %}

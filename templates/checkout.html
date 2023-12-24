@@ -1,0 +1,55 @@
+{% extends 'homeUser.html' %}
+{% load static %}
+{% block content %}
+<div class="row">
+    <div class="col-lg-6">
+        <div class="box-element" id="form-wrapper" style="background-color: #f9f9f9; padding: 15px; border: 1px solid #ddd; border-radius: 5px; box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2);">
+            <!-- Shipping Information -->
+            <div id="shipping-info">
+                <hr>
+                <p>Shipping Information:</p>
+                <hr>
+                <form method="post" action="{% url 'send_order' %}">
+                    {% csrf_token %}
+                    <div class="form-field">
+                        <input class="form-control" type="text" name="address" placeholder="Address.." required>
+                    </div>
+                    <div class="form-field">
+                        <input class="form-control" type="text" name="city" placeholder="City.." required>
+                    </div>
+                    <div class="form-field">
+                        <input class="form-control" type="text" name="phone" placeholder="Phone.." required onfocus="document.getElementById('phoneNote').style.display = 'block'">
+                        <span id="phoneNote" class="text-muted" style="display: none;">Please enter a valid phone number. We may contact you to confirm.</span>
+                    </div>
+                    <button type="submit" class="btn btn-success btn-block" style="background-color: #007bff; color: #fff;">
+                        Send Order
+                    </button>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-lg-6">
+        <div class="box-element" style="background-color: #f9f9f9; padding: 15px; border: 1px solid #ddd; border-radius: 5px; box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2);">
+            <!-- Order Summary -->
+            <a class="btn btn-outline-dark" href="{% url 'cart' %}">&#x2190; Back to Cart</a>
+            <hr>
+            <h3>Order Summary</h3>
+  
+            {% for item in items %}
+            <div class="cart-row" style="display: flex; align-items: center;">
+                <div style="flex:2">
+                    <img class="row-image" src="{{item.product.imageURL}}" style="max-width: 120px; max-height: 120px; border-radius: 5px; box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2);">
+                </div>
+                <div style="flex:4">
+                    <h5>{{item.product.name}} <br> ${{item.product.price|floatformat:2}} x{{item.quantity}}</h5>
+                </div>
+            </div>
+            {% endfor %}
+            <h5>Items: {{quantity}}</h5>
+            <h5>Total: ${{total_cart_cost|floatformat:2}}</h5>
+        </div>
+    </div>
+</div>
+
+{% endblock content %}

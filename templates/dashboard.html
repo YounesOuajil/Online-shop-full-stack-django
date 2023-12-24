@@ -1,0 +1,68 @@
+{% extends 'homeAdmin.html' %}
+{% load static %}
+{% block content %}
+
+    <div class="content">
+        <div class="header">
+            <div class="page-title">Dashboard</div>
+            <div class="user-profile">
+                <img class="user-avatar" src="{% static 'img/ownerpic.png' %}">
+                <div class="user-name">Ouajil Younes</div>
+            </div>
+        </div>
+
+<div class="main-content">
+    <div class="statistic">
+        <div class="statistic-item">
+            <div class="statistic-value">{{ product_total }}</div>
+            <div class="statistic-label">Products</div>
+        </div>
+        <div class="statistic-item">
+            <div class="statistic-value">{{ order_total }}</div>
+            <div class="statistic-label">Orders</div>
+        </div>
+        <div class="statistic-item">
+            <div class="statistic-value">{{ customer_total }}</div>
+            <div class="statistic-label">Customers</div>
+        </div>
+    </div>
+
+            <canvas id="myChart" width="400" height="400"></canvas>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script>
+        // Make an AJAX request to the Django backend to get the shipped orders data
+        fetch('/dashboard/') // Replace this with the URL of your Django view
+            .then(response => response.json())
+            .then(data => {
+                var productNames = [];
+                var productQuantities = [];
+
+                data.forEach(product => {
+                    productNames.push(product.product__name);
+                    productQuantities.push(product.total_quantity);
+                });
+
+                var ctx = document.getElementById('myChart').getContext('2d');
+
+                var myChart = new Chart(ctx, {
+                    type: 'bar',
+                    data: {
+                        labels: productNames,
+                        datasets: [{
+                            label: 'Top 5 Selling Products by Quantity',
+                            data: productQuantities,
+                            backgroundColor: 'rgba(54, 162, 235, 0.2)',
+                            borderColor: 'rgba(54, 162, 235, 1)',
+                            borderWidth: 1
+                        }]
+                    },
+                    options: {
+                        // Additional chart options
+                    }
+                });
+            });
+    </script>
+{% endblock %}
